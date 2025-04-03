@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2025 by anonymous (http://jsbin.com/nenubuvaxe/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Speed Test</title>
+    <style>
+        /* Background animation */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(45deg, #8B0000, #000000, #ff4500, #660000);
+            background-size: 400% 400%;
+            animation: gradientMove 8s infinite linear;
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }@keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .game-container {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.7);
+        transition: transform 0.3s;
+    }
+
+    .game-container:hover {
+        transform: scale(1.05);
+    }
+
+    .timer, .score, .high-score {
+        font-size: 28px;
+        margin: 10px;
+        font-weight: bold;
+    }
+
+    .game-button {
+        background: linear-gradient(135deg, #ff0000, #ff6347);
+        color: white;
+        font-size: 24px;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin: 10px;
+    }
+
+    .game-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0px 0px 15px rgba(255, 69, 0, 0.8);
+    }
+
+    .disabled {
+        background: gray !important;
+        cursor: not-allowed;
+        box-shadow: none !important;
+    }
+
+    .retry-button {
+        background: linear-gradient(135deg, #ff0000, #ff6347);
+        color: white;
+        font-size: 24px;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin: 10px;
+        position: absolute;
+        bottom: 20px;
+    }
+
+    .retry-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0px 0px 15px rgba(255, 69, 0, 0.8);
+    }
+</style>
+
+</head>
+<body>
+    <div class="game-container">
+        <h1>Click Speed Test</h1>
+        <p class="timer">Time Left: <span id="time">10</span> sec</p>
+        <p class="score">Score: <span id="score">0</span></p>
+        <p class="high-score">Highest Score: <span id="highScore">0</span></p>
+        <button class="game-button" id="clickButton" onclick="increaseScore()">Click Me!</button>
+    </div><button class="retry-button" id="retryButton" onclick="resetGame()" style="display: none;">Retry</button>
+
+<script>
+    let score = 0;
+    let timeLeft = 10;
+    let gameStarted = false;
+    let highScore = localStorage.getItem("highScore") || 0;
+    document.getElementById("highScore").textContent = highScore;
+
+    function increaseScore() {
+        if (!gameStarted) startGame();
+        if (timeLeft > 0) {
+            score++;
+            document.getElementById('score').textContent = score;
+        }
+    }
+
+    function startGame() {
+        gameStarted = true;
+        let timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('time').textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('clickButton').classList.add('disabled');
+                document.getElementById('clickButton').disabled = true;
+                updateHighScore();
+                document.getElementById('retryButton').style.display = 'block';
+            }
+        }, 1000);
+    }
+
+    function updateHighScore() {
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem("highScore", highScore);
+            document.getElementById("highScore").textContent = highScore;
+        }
+    }
+
+    function resetGame() {
+        score = 0;
+        timeLeft = 10;
+        gameStarted = false;
+        document.getElementById('score').textContent = score;
+        document.getElementById('time').textContent = timeLeft;
+        document.getElementById('clickButton').classList.remove('disabled');
+        document.getElementById('clickButton').disabled = false;
+        document.getElementById('retryButton').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
